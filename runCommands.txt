@@ -1,0 +1,15 @@
+
+python manage.py makemigrations
+python manage.py migrate
+
+backend
+.venv\Scripts\Activate.ps1
+env\scripts\deactivate
+cd backend
+python manage.py runserver
+
+admin-frontend
+npm start
+
+customer-frontend
+npm run dev
