@@ -1,10 +1,9 @@
-from django.urls import path 
+from django.urls import path
 
-from .views import TeacherView
+from .views import ListTeacherView, SingleTeacherView
 
 urlpatterns = [
-    path('teacher/', TeacherView.as_view()),
-    path('teacher/<uuid:uuid>', TeacherView.as_view()),
-    # path('articles/<int:year>/<int:month>/', views.month_archive),
-    # path('articles/<int:year>/<int:month>/<slug:slug>/', views.article_detail),
+    path("teacher/", SingleTeacherView.as_view()),
+    path("teacher/<uuid:uuid>/", SingleTeacherView.as_view()),
+    path("teachersList/", ListTeacherView.as_view()),
 ]
