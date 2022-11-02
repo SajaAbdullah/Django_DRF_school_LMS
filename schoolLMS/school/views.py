@@ -38,22 +38,29 @@ class ListTeacherView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class SingleTeacherView(View):
 
-    # single object return
-    def get(self, request, uuid):
+    def get(self, request ):
         """
-        this method take http request of get type of single
-        teacher by id, retrieve the specified teacher according
-        id and return response in json format
+        this method take http request of get type with quary parms 
+        urls "teacher/?uuid=f7d2ce46-c60b-44ec-b0c9-1978dea2b7e6" 
+        retrieve the specified teacher according uuid and return 
+        response in json format
         """
-        teacher = Teacher.objects.get(id=uuid)
-        serilized = json.dumps(json.loads(teacher, cls=UserEncoder))
+        teacher=Teacher.objects.get(id=request.GET['uuid'])
+        serilized=json.loads(json.dumps(teacher, cls=UserEncoder))
         return JsonResponse({"teacher": serilized})
-
+        
     def post(self, request, format=None):
         """
         take post http request with json body
         ,save object to DB and return saved data
         """
         teacher = json.loads(request.body)
+        teachers = Teacher.objects.all()
+        for t in teachers:
+            if t.name == teacher["name"]:
+                return JsonResponse(
+                    {"teacher": "Teacher name is not unique."}, status=409
+                )
+
         Teacher.objects.create(**teacher)
         return JsonResponse({"teacher": teacher})
