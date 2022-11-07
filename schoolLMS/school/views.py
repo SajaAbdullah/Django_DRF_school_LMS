@@ -24,8 +24,7 @@ class TeacherApiView(APIView):
         teacher = Teacher.objects.filter(id=request.GET.get("uuid"))
         if not teacher:
             return Response(
-                {"res": "Teacher does not exists"}, 
-                status=status.HTTP_404_NOT_FOUND
+                {"res": "Teacher does not exists"}, status=status.HTTP_404_NOT_FOUND
             )
         serializer = UserSerializer(teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -45,17 +44,29 @@ class TeacherApiView(APIView):
         """
         update teacher data
         """
-        teacher_instance=Teacher.objects.filter(id=request.data.get("id"))
+        teacher_instance = Teacher.objects.filter(id=request.data.get("id"))
         if not teacher_instance:
             return Response(
-                {"res": "Object with todo id does not exists"}, 
-                status=status.HTTP_400_BAD_REQUEST
+                {"res": "Object with todo id does not exists"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-      
-        serializer = UserSerializer(instance = teacher_instance, data=request.data, partial = True)
+
+        serializer = UserSerializer(
+            instance=teacher_instance, data=request.data, partial=True
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
+    def delete(self, request):
+        """
+        Deletes teacher
+        """
+        teacher_instance = Teacher.objects.filter(id=request.GET.get("uuid"))
+        if not teacher_instance:
+            return Response(
+                {"res": "Teacher does not exists"}, status=status.HTTP_404_NOT_FOUND
+            )
+        teacher_instance.delete()
+        return Response({"res": "Teacher deleted!"}, status=status.HTTP_200_OK)
