@@ -21,7 +21,12 @@ class TeacherApiView(APIView):
         """
         retrive teacher method using quary parms
         """
-        teacher = Teacher.objects.get(id=request.GET.get("uuid"))
+        teacher = Teacher.objects.filter(id=request.GET.get("uuid"))
+        if not teacher:
+            return Response(
+                {"res": "Teacher does not exists"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
         serializer = UserSerializer(teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -34,4 +39,23 @@ class TeacherApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request):
+        """
+        update teacher data
+        """
+        teacher_instance=Teacher.objects.filter(id=request.data.get("id"))
+        if not teacher_instance:
+            return Response(
+                {"res": "Object with todo id does not exists"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+      
+        serializer = UserSerializer(instance = teacher_instance, data=request.data, partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
