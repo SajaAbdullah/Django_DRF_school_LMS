@@ -68,7 +68,6 @@ class SingleTeacherView(View):
         """
         update method using put request, body type:raw json
         """
-
         body = json.loads(request.body)
         teacher = Teacher.objects.get(id=body.get("id"))
         teacher.name = body.get("name")
@@ -77,3 +76,11 @@ class SingleTeacherView(View):
 
         serilized = json.loads(json.dumps(teacher, cls=UserEncoder))
         return JsonResponse({"Updated Teacher Data": serilized}, status=200)
+    
+    def delete(self, request):
+        """
+        delete method using delete request using id send using quary parms
+        """
+        teacher = Teacher.objects.get(id=request.GET.get("uuid"))
+        teacher.delete()
+        return JsonResponse( {"teacher":"deleted"} ,status=200)
