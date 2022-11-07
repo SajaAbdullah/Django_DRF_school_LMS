@@ -37,19 +37,18 @@ class ListTeacherView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class SingleTeacherView(View):
-
-    def get(self, request ):
+    def get(self, request):
         """
-        this method take http request of get type with quary parms 
-        urls "teacher/?uuid=f7d2ce46-c60b-44ec-b0c9-1978dea2b7e6" 
-        retrieve the specified teacher according uuid and return 
+        this method take http request of get type with quary parms
+        urls "teacher/?uuid=f7d2ce46-c60b-44ec-b0c9-1978dea2b7e6"
+        retrieve the specified teacher according uuid and return
         response in json format
         """
-        teacher=Teacher.objects.get(id=request.GET['uuid'])
-        serilized=json.loads(json.dumps(teacher, cls=UserEncoder))
+        teacher = Teacher.objects.get(id=request.GET["uuid"])
+        serilized = json.loads(json.dumps(teacher, cls=UserEncoder))
         return JsonResponse({"teacher": serilized})
-        
-    def post(self, request, format=None):
+
+    def post(self, request):
         """
         take post http request with json body
         ,save object to DB and return saved data
@@ -64,3 +63,17 @@ class SingleTeacherView(View):
 
         Teacher.objects.create(**teacher)
         return JsonResponse({"teacher": teacher})
+
+    def put(self, request):
+        """
+        update method using put request, body type:raw json
+        """
+
+        body = json.loads(request.body)
+        teacher = Teacher.objects.get(id=body.get("id"))
+        teacher.name = body.get("name")
+        teacher.email = body.get("email")
+        teacher.phone_number = body.get("phone_number")
+
+        serilized = json.loads(json.dumps(teacher, cls=UserEncoder))
+        return JsonResponse({"Updated Teacher Data": serilized}, status=200)
