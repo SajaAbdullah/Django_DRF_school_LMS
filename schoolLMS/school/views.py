@@ -15,8 +15,8 @@ class TeacherListApiView(APIView):
         serializer = UserSerializer(teachers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class TeacherApiView(APIView):
-    
     def get(self, request):
         """
         retrive teacher method using quary parms
@@ -25,11 +25,11 @@ class TeacherApiView(APIView):
         serializer = UserSerializer(teacher)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self ,request): 
+    def post(self, request):
         """
         save enterd data in teacher model
         """
-        serializer=UserSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

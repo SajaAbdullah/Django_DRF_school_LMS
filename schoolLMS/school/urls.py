@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import TeacherListApiView , TeacherApiView
+from .views import TeacherApiView, TeacherListApiView
 
-app_name="school"
+app_name = "school"
 urlpatterns = [
     path("listteachers/", TeacherListApiView.as_view()),
     path("teacher/", TeacherApiView.as_view()),
