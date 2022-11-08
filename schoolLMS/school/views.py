@@ -1,86 +1,72 @@
-import json
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-
-from .models import Teacher
-
-# Create your views here.
+from school.models import Teacher
+from school.serializers import UserSerializer
 
 
-class UserEncoder(json.JSONEncoder):
-    def default(self, user):
-        if isinstance(user, Teacher):
-            return {
-                "name": user.name,
-                "email": user.email,
-                "phone Number": user.phone_number,
-            }
-        return super().default(user)
-
-
-class ListTeacherView(View):
-
-    # list of objects return
+class TeacherListApiView(APIView):
     def get(self, request):
         """
-        retirive all teachers of database and return them
+        List all Teachers
         """
         teachers = Teacher.objects.all()
-        serilizedTeachers = []
-        for teacher in teachers:
-            serilizedTeachers.append(json.loads(json.dumps(teacher, cls=UserEncoder)))
-        return JsonResponse({"All teachers": serilizedTeachers})
+        serializer = UserSerializer(teachers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class SingleTeacherView(View):
+class TeacherApiView(APIView):
     def get(self, request):
         """
-        this method take http request of get type with quary parms
-        urls "teacher/?uuid=f7d2ce46-c60b-44ec-b0c9-1978dea2b7e6"
-        retrieve the specified teacher according uuid and return
-        response in json format
+        retrive teacher method using quary parms
         """
-        teacher = Teacher.objects.get(id=request.GET["uuid"])
-        serilized = json.loads(json.dumps(teacher, cls=UserEncoder))
-        return JsonResponse({"teacher": serilized})
+        teacher = Teacher.objects.filter(id=request.GET.get("uuid"))
+        if not teacher:
+            return Response(
+                {"res": "Teacher does not exists"}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = UserSerializer(teacher)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         """
-        take post http request with json body
-        ,save object to DB and return saved data
+        save enterd data in teacher model
         """
-        teacher = json.loads(request.body)
-        teachers = Teacher.objects.all()
-        for t in teachers:
-            if t.name == teacher["name"]:
-                return JsonResponse(
-                    {"teacher": "Teacher name is not unique."}, status=409
-                )
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        Teacher.objects.create(**teacher)
-        return JsonResponse({"teacher": teacher})
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
     def put(self, request):
         """
-        update method using put request, body type:raw json
+        update teacher data8
         """
-        body = json.loads(request.body)
-        teacher = Teacher.objects.get(id=body.get("id"))
-        teacher.name = body.get("name")
-        teacher.email = body.get("email")
-        teacher.phone_number = body.get("phone_number")
+        teacher_instance = Teacher.objects.filter(id=request.data.get("id"))
+        if not teacher_instance:
+            return Response(
+                {"res": "Object with todo id does not exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        serilized = json.loads(json.dumps(teacher, cls=UserEncoder))
-        return JsonResponse({"Updated Teacher Data": serilized}, status=200)
-    
+        serializer = UserSerializer(
+            instance=teacher_instance, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def delete(self, request):
         """
-        delete method using delete request using id send using quary parms
+        Deletes teacher
         """
-        teacher = Teacher.objects.get(id=request.GET.get("uuid"))
-        teacher.delete()
-        return JsonResponse( {"teacher":"deleted"} ,status=200)
+        teacher_instance = Teacher.objects.filter(id=request.GET.get("uuid"))
+        if not teacher_instance:
+            return Response(
+                {"res": "Teacher does not exists"}, status=status.HTTP_404_NOT_FOUND
+            )
+        teacher_instance.delete()
+        return Response({"res": "Teacher deleted!"}, status=status.HTTP_200_OK)
