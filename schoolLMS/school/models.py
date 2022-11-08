@@ -43,4 +43,17 @@ class Student(models.Model):
 class ClassGrade(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = models.CharField(max_length=50)
-    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+
+class TeacherClasses(models.Model):
+    class meta:
+        unique_together = (("class_grade", "teacher"),)
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    class_grade = models.ForeignKey(ClassGrade, on_delete=models.CASCADE)
+    class_grade = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+
+class Experties(models.Model):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    domain = models.CharField(max_length=50)

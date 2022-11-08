@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Teacher
-from .serializers import UserSerializer
+from school.models import Teacher
+from school.serializers import UserSerializer
 
 
 class TeacherListApiView(APIView):
@@ -42,7 +42,7 @@ class TeacherApiView(APIView):
 
     def put(self, request):
         """
-        update teacher data
+        update teacher data8
         """
         teacher_instance = Teacher.objects.filter(id=request.data.get("id"))
         if not teacher_instance:
