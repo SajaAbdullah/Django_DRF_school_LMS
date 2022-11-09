@@ -1,10 +1,9 @@
 from django.urls import path
 
-from .views import TeacherApiView, TeacherListApiView
+from .views import TeacherRetrieveGenaricView, TeacherListGenaricView
 
 app_name = "school"
 urlpatterns = [
-    path("listteachers/", TeacherListApiView.as_view()),
-    path("teacher/", TeacherApiView.as_view()),
-    path("teacher/?<uuid>", TeacherApiView.as_view()),
-]
+    path("list_teachers/", TeacherListGenaricView.as_view(), name="teachers_list_api"),
+    path("retrieve_teacher/<uuid:id>", TeacherRetrieveGenaricView.as_view(),name="retrieve_teacher"),
+] 
