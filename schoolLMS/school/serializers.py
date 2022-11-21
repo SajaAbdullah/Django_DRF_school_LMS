@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from school.models import ClassGrade, Experties, Teacher
+from .models import ClassGrade, Teacher, TeacherClass, TeacherExperty
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -8,14 +8,28 @@ class UserSerializer(serializers.ModelSerializer):
         model = Teacher
         fields = ["name", "email", "phone_number"]
 
+    def validate(self, data):
+        name = data.get("name")
+        teachers = Teacher.objects.all()
+        for t in teachers:
+            if t.name == name:
+                raise serializers.ValidationError("name must be unique ^_^")
+        return data
+
 
 class ClassGradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassGrade
-        feilds = ["name"]
+        fields = ["name"]
 
 
-class ExpertiesSerializer(serializers.ModelSerializer):
+class TeacherClassSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Experties
-        feilds = ["domain", "Teacher"]
+        model = TeacherClass
+        fields = ["class_grade", "teacher"]
+
+
+class TeacherExpertySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeacherExperty
+        fields = ["domain"]

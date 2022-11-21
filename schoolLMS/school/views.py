@@ -1,31 +1,23 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import generics
 
-from school.models import Teacher
-from school.serializers import UserSerializer
+from .models import Teacher, TeacherClass, TeacherExperty
+from .serializers import (
+    TeacherClassSerializer,
+    TeacherExpertySerializer,
+    UserSerializer,
+)
 
 
-class TeacherListGenaricView(generics.ListAPIView):
+class TeacherListView(generics.ListAPIView):
     """
-    using genaric views list teachers
-    """
-
-    queryset = Teacher.objects.all()
-    serializer_class = UserSerializer
-
-
-class TeacherRetrieveGenaricView(generics.RetrieveAPIView):
-    """
-    using genaric RetrieveAPIView retrive teacher
+    using generic views list teachers
     """
 
     queryset = Teacher.objects.all()
     serializer_class = UserSerializer
-    lookup_field = "id"
 
 
-class TeacherCreateGenaricView(generics.CreateAPIView):
+class TeacherCreateView(generics.CreateAPIView):
     """
     Save teacher object in DB
     """
@@ -34,21 +26,37 @@ class TeacherCreateGenaricView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
 
-class TeacherUpdateGenaricView(generics.UpdateAPIView):
+class TeacherRUDView(generics.RetrieveUpdateDestroyAPIView):
     """
-    update teacher acoording givien data
-    """
-
-    queryset = Teacher.objects.all()
-    serializer_class = UserSerializer
-    lookup_field = "id"
-
-
-class TeacherDeleteGenaricView(generics.DestroyAPIView):
-    """
-    update teacher acoording givien data
+    combind Retrieve/Update/Delete into one view
     """
 
     queryset = Teacher.objects.all()
     serializer_class = UserSerializer
     lookup_field = "id"
+
+
+class TeacherClassCreateView(generics.CreateAPIView):
+    """
+    add teacher classes
+    """
+
+    queryset = TeacherClass.objects.all()
+    serializer_class = TeacherClassSerializer
+
+
+class ListTeacherClassView(generics.ListAPIView):
+    """
+    using generic views list teachers
+    """
+
+    queryset = TeacherClass.objects.all()
+    serializer_class = TeacherClassSerializer
+    lookup_field = "teacher"
+
+
+class ListTeahcerExperty(generics.ListAPIView):
+
+    queryset = TeacherExperty.objects.all()
+    serializer_class = TeacherExpertySerializer
+    lookup_field = "teacher"

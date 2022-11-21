@@ -2,9 +2,6 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-from rest_framework import generics
-
-# Create your models here.
 
 
 class Teacher(models.Model):
@@ -47,8 +44,8 @@ class ClassGrade(models.Model):
     name = models.CharField(max_length=50)
 
 
-class TeacherClasse(models.Model):
-    class meta:
+class TeacherClass(models.Model):
+    class Meta:
         unique_together = (("class_grade", "teacher"),)
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
@@ -56,7 +53,7 @@ class TeacherClasse(models.Model):
     teacher = models.UUIDField(editable=True, default=uuid.uuid4)
 
 
-class Experties(models.Model):
+class TeacherExperty(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     teacher = models.UUIDField(editable=True, default=uuid.uuid4)
     domain = models.CharField(max_length=50)
