@@ -14,6 +14,9 @@ class Teacher(models.Model):
     )
     phone_number = models.PositiveIntegerField(validators=[phone_regex])
 
+    def __str__(self):
+        return self.name
+
 
 class Owner(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)

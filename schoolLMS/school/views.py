@@ -56,6 +56,8 @@ class ListTeacherClassView(generics.ListAPIView):
 
 
 class ListTeahcerExperty(generics.ListAPIView):
+    """method that lists teacher expertise from TeacherExperty class
+    one to many field"""
 
     queryset = TeacherExperty.objects.all()
     serializer_class = TeacherExpertySerializer

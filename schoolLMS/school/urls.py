@@ -11,7 +11,7 @@ from .views import (
 
 app_name = "school"
 urlpatterns = [
-    path("list_teachers/", TeacherListView.as_view(), name="teachers_list_api"),
+    path("list_teacher/", TeacherListView.as_view(), name="list_teacher"),
     path(
         "retrieve_teacher/<uuid:id>",
         TeacherRUDView.as_view(),
