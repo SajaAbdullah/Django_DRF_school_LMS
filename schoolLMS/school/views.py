@@ -1,4 +1,7 @@
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 
 from .models import Teacher, TeacherClass, TeacherExperty
 from .serializers import (
@@ -17,13 +20,16 @@ class TeacherListView(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-class TeacherCreateView(generics.CreateAPIView):
+class TeacherCreateView(APIView):
     """
-    Save teacher object in DB
+    create and add teacher object in DB
     """
-
-    queryset = Teacher.objects.all()
-    serializer_class = UserSerializer
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=ValueError):
+            serializer.save()
+            return Response(serializer.data, status=200)
+        return Response(serializer.errors , status=400)
 
 
 class TeacherRUDView(generics.RetrieveUpdateDestroyAPIView):

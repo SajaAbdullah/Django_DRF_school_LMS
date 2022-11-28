@@ -1,25 +1,20 @@
 from django.test import TestCase
 from django.urls import reverse
+from ..serializers import UserSerializer
+from ..views import TeacherCreateView
 
 from ..models import Teacher
-
-
+from ddt import ddt, data, unpack
+@ddt
 class TeacherTestCase(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        """this function set up the data in virtual DB to check its insertion
-        Simple setUp execute many times with each function.
-        using setUpTestData(cls) will execute once for whole TestCase class"""
-        cls.teacher = Teacher.objects.create(
-            name="sana", email="sana@gmail.com", phone_number="03044635411"
-        )
 
-    def test_model_content(self):
+    @data(("saja", "asla@gmail.com", "032456974813"),
+          ("abdi", "abdi@gmail.com", "038245652653"),
+          ("farhan", "farhan@gmail.com", "032456974813"))
+    @unpack
+    def test_model_content(self,  name, email, phone_number):
         """test that inserted data from set up is inserted successfully"""
-        teacher = Teacher.objects.get(name="sana")
-        self.assertEquals(teacher.name, "sana")
-        self.assertEquals(teacher.email, "sana@gmail.com")
-        self.assertEqual(str(teacher.phone_number), "3044635411")
+        Teacher.objects.create(name=name, email=email, phone_number=phone_number)
 
     def test_teacher_url_exists_at_correct_location(self):
         """test urls routes is correct and up for running"""
@@ -30,3 +25,4 @@ class TeacherTestCase(TestCase):
         """second method to check url is Exist"""
         response = reverse("school:create_teacher")
         self.assertEquals("/school/create_teacher/", response)
+
