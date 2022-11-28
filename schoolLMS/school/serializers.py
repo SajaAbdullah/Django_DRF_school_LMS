@@ -6,7 +6,7 @@ from .models import ClassGrade, Teacher, TeacherClass, TeacherExperty
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ["name", "email", "phone_number"]
+        fields = ["id", "name", "email", "phone_number"]
 
     def validate(self, data):
         name = data.get("name")

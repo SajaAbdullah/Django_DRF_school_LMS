@@ -1,28 +1,44 @@
-from django.test import TestCase
+import json
+
+from ddt import data, ddt, unpack
+from django.test import Client, TestCase
 from django.urls import reverse
-from ..serializers import UserSerializer
-from ..views import TeacherCreateView
 
 from ..models import Teacher
-from ddt import ddt, data, unpack
+
+
 @ddt
 class TeacherTestCase(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        client = Client()
+        cls.teacher = Teacher.objects.create(
+            name="Safwan", email="safwan@gmail.com", phone_number="030844631498"
+        )
 
-    @data(("saja", "asla@gmail.com", "032456974813"),
-          ("abdi", "abdi@gmail.com", "038245652653"),
-          ("farhan", "farhan@gmail.com", "032456974813"))
+    def test_teacher_list_GET_api(self):
+        """test teacher list api url and view"""
+
+        response = self.client.get(reverse("school:list_teacher"))
+        self.assertEquals(response.status_code, 200)
+
+    def test_teacher_GET_api(self):
+        """test retrieve teacher api by passing the id"""
+        user = Teacher.objects.get(name="Safwan")
+        response = self.client.get(reverse("school:retrieve_teacher", args=[user.id]))
+        self.assertEquals(response.status_code, 200)
+
+    @data(
+        ("Adnan", "adnan@gmail.com", "03055789655"),
+        ("abdi", "abdi@gmail.com", "03044896577"),
+        ("farhan", "farhan@gmail.com", "03044698755"),
+    )
     @unpack
-    def test_model_content(self,  name, email, phone_number):
-        """test that inserted data from set up is inserted successfully"""
-        Teacher.objects.create(name=name, email=email, phone_number=phone_number)
-
-    def test_teacher_url_exists_at_correct_location(self):
-        """test urls routes is correct and up for running"""
-        response = self.client.get("/school/create_teacher/")
-        self.assertEqual(response.status_code, 405)
-
-    def test_api(self):
-        """second method to check url is Exist"""
-        response = reverse("school:create_teacher")
-        self.assertEquals("/school/create_teacher/", response)
-
+    def test_teacher_POST_api(self, name, email, phone_number):
+        """test post request api by passing multiple data"""
+        response = self.client.post(
+            reverse("school:create_teacher"),
+            {"name": name, "email": email, "phone_number": phone_number},
+        )
+        print(response.data)
+        self.assertEquals(response.status_code, 200)
