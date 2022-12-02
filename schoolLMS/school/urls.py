@@ -1,12 +1,12 @@
 from django.urls import path
 
 from .views import (
-    ListTeacherClassView,
-    ListTeahcerExperty,
     TeacherClassCreateView,
+    TeacherClassListView,
     TeacherCreateView,
     TeacherListView,
     TeacherRUDView,
+    TeahcerExpertyListView,
 )
 
 app_name = "school"
@@ -29,23 +29,18 @@ urlpatterns = [
         name="delete_teacher",
     ),
     path(
-        "add_teacher_class/",
+        "create_teacher_class/",
         TeacherClassCreateView.as_view(),
-        name="add_teacher_class",
-    ),
-    path(
-        "list_teacher_classes/",
-        TeacherClassCreateView.as_view(),
-        name="add_teacher_class",
+        name="create_teacher_class",
     ),
     path(
         "list_teacher_classes/<uuid:teacher>",
-        ListTeacherClassView.as_view(),
+        TeacherClassListView.as_view(),
         name="list_teacher_classes",
     ),
     path(
         "list_teacher_experty/<uuid:teacher>",
-        ListTeahcerExperty.as_view(),
+        TeahcerExpertyListView.as_view(),
         name="list_teacher_experty",
     ),
 ]

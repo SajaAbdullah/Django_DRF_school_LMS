@@ -26,9 +26,9 @@ class TeacherCreateView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=ValueError):
+        if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=200)
+            return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
 
@@ -51,7 +51,7 @@ class TeacherClassCreateView(generics.CreateAPIView):
     serializer_class = TeacherClassSerializer
 
 
-class ListTeacherClassView(generics.ListAPIView):
+class TeacherClassListView(generics.ListAPIView):
     """
     using generic views list teachers
     """
@@ -61,7 +61,7 @@ class ListTeacherClassView(generics.ListAPIView):
     lookup_field = "teacher"
 
 
-class ListTeahcerExperty(generics.ListAPIView):
+class TeahcerExpertyListView(generics.ListAPIView):
     """method that lists teacher expertise from TeacherExperty class
     one to many field"""
 
