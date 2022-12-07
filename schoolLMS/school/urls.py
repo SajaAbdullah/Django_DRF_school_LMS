@@ -8,10 +8,11 @@ from .views import (
     TeacherRUDView,
     TeahcerExpertyListView,
 )
+from django.views.decorators.cache import cache_page
 
 app_name = "school"
 urlpatterns = [
-    path("list_teacher/", TeacherListView.as_view(), name="list_teacher"),
+    path("list_teacher/", cache_page(60)(TeacherListView.as_view()), name="list_teacher"),
     path(
         "retrieve_teacher/<uuid:id>",
         TeacherRUDView.as_view(),

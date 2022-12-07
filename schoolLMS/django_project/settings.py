@@ -43,9 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.cache.UpdateCacheMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.cache.FetchFromCacheMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -128,7 +126,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CACHE_MIDDLEWARE_ALIAS = "default"  # which cache alias to use
-CACHE_MIDDLEWARE_SECONDS = "600"  # number of seconds to cache a page for (TTL)
+CACHE_MIDDLEWARE_SECONDS = "120"  # number of seconds to cache a page for (TTL)
 
 CACHES = {
     "default": {
